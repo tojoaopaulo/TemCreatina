@@ -4,11 +4,15 @@ import * as nodemailer from 'nodemailer';
 
 export class Controlador {
 
+  keys: any;
   host: string = 'https://www.gsuplementos.com.br';
-  path: string = '/creatina-monohidratada-250gr-growth-supplements-p985931';
-  //path: string = '/creatina-250g-creapure-growth-supplements-p985824';
+  //path: string = '/creatina-monohidratada-250gr-growth-supplements-p985931';
+  path: string = '/creatina-250g-creapure-growth-supplements-p985824';
   //path = '/beta-alanina-em-po-growth-supplements';
 
+  async setup(){
+    this.keys = await Controlador.LerArquivo("appsettings.json");
+  }
 
   page!: puppeteer.Page;
   TempoEntreAcoes = async (tempoEspera = 0) => {
@@ -42,6 +46,8 @@ export class Controlador {
     });
     this.page = await browser.newPage();
 
+
+    await this.setup();
     await this.FazerLogin();
     await this.RodarFluxo(browser);
   }
@@ -114,13 +120,11 @@ export class Controlador {
     const [btnLogin] = await this.page.$x("//button[contains(., 'Continuar')]");
     if (btnLogin) {
 
-      var keys = await Controlador.LerArquivo("appsettings.json");
-
       //await this.page.focus('[name="usuario"]');
-      //await this.page.keyboard.type(keys.usuario, { delay: 20 });
+      //await this.page.keyboard.type(keys.growthUser, { delay: 20 });
 
       await this.page.focus('[name="senha"]');
-      await this.page.keyboard.type(keys.senha, { delay: 20 });
+      await this.page.keyboard.type(this.keys.growthPass, { delay: 20 });
 
       await this.page.keyboard.press('Enter');
 
@@ -141,8 +145,8 @@ export class Controlador {
   {
 
     let mailOptions = {
-      from: "tojoaopaulo@gmail.com",
-      to: "tojoaopaulo@gmail.com",
+      from: this.keys.emailFrom,
+      to: this.keys.emailTo,
       subject: "Tem Creatina",
       html: "Tem creatina! CORRE!"
     }
@@ -151,8 +155,8 @@ export class Controlador {
       {
         service: 'gmail',
         auth: {
-          user: "autoinfotechbr@gmail.com",
-          pass: "szhzkgobbylblbgu"
+          user: this.keys.emailUser,
+          pass: this.keys.emailPass
         },
         tls: { rejectUnauthorized: false }
       }
