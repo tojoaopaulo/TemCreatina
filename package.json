@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@types/nodemailer": "^6.4.7",
+    "nodemailer": "^6.9.1",
+    "open": "^8.4.2",
+    "puppeteer": "^19.7.3"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^7.0.4"
+  },
+  "type": "commonjs"
+}
